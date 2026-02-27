@@ -1,6 +1,6 @@
 import { Match, MatchDetail, Lineup, MatchEvent, TacticalInsight } from "@/types";
 
-// Partidos de ejemplo para demo
+// Partidos de ejemplo para demo - AHORA RIVER VA GANANDO 2-1
 export const MOCK_MATCHES: Match[] = [
   {
     fixture: {
@@ -32,9 +32,10 @@ export const MOCK_MATCHES: Match[] = [
         logo: "https://media.api-sports.io/football/teams/455.png"
       }
     },
-    goals: { home: 2, away: 1 },
+    // RIVER GANANDO 2-1
+    goals: { home: 1, away: 2 },
     score: {
-      halftime: { home: 1, away: 0 },
+      halftime: { home: 0, away: 1 },
       fulltime: { home: null, away: null },
       extratime: { home: null, away: null },
       penalty: { home: null, away: null }
@@ -118,7 +119,7 @@ export const MOCK_MATCHES: Match[] = [
   }
 ];
 
-// Detalle completo de un partido (Boca vs River)
+// Detalle completo - RIVER GANANDO 2-1
 export const MOCK_MATCH_DETAIL: MatchDetail = {
   ...MOCK_MATCHES[0],
   lineups: {
@@ -184,12 +185,11 @@ export const MOCK_MATCH_DETAIL: MatchDetail = {
     ]
   },
   events: [
-    { time: { elapsed: 0, extra: null }, team: { id: 451, name: "Boca Juniors", logo: "" }, player: { id: 1, name: null }, assist: { id: null, name: null }, type: "Card", detail: "Yellow Card", comments: null },
-    { time: { elapsed: 23, extra: null }, team: { id: 451, name: "Boca Juniors", logo: "" }, player: { id: 9, name: "Miguel Merentiel" }, assist: { id: 6, name: "Pol Fernández" }, type: "Goal", detail: "Normal Goal", comments: null },
+    { time: { elapsed: 15, extra: null }, team: { id: 455, name: "River Plate", logo: "" }, player: { id: 111, name: "Miguel Borja" }, assist: { id: 109, name: "Manuel Lanzini" }, type: "Goal", detail: "Normal Goal", comments: null },
+    { time: { elapsed: 23, extra: null }, team: { id: 451, name: "Boca Juniors", logo: "" }, player: { id: 9, name: "Luis Vázquez" }, assist: { id: 6, name: "Pol Fernández" }, type: "Goal", detail: "Normal Goal", comments: null },
     { time: { elapsed: 34, extra: null }, team: { id: 455, name: "River Plate", logo: "" }, player: { id: 107, name: "Rodrigo Villagra" }, assist: { id: null, name: null }, type: "Card", detail: "Yellow Card", comments: null },
-    { time: { elapsed: 45, extra: 2 }, team: { id: 455, name: "River Plate", logo: "" }, player: { id: 108, name: "Ignacio Fernández" }, assist: { id: 109, name: "Manuel Lanzini" }, type: "Goal", detail: "Normal Goal", comments: null },
+    { time: { elapsed: 45, extra: 2 }, team: { id: 455, name: "River Plate", logo: "" }, player: { id: 110, name: "Paulo Solari" }, assist: { id: 106, name: "Rodrigo Aliendro" }, type: "Goal", detail: "Normal Goal", comments: null },
     { time: { elapsed: 56, extra: null }, team: { id: 451, name: "Boca Juniors", logo: "" }, player: { id: 8, name: "Alan Varela" }, assist: { id: null, name: null }, type: "Card", detail: "Yellow Card", comments: null },
-    { time: { elapsed: 62, extra: null }, team: { id: 451, name: "Boca Juniors", logo: "" }, player: { id: 11, name: "Kevin Zenón" }, assist: { id: 9, name: "Luis Vázquez" }, type: "Goal", detail: "Normal Goal", comments: null },
     { time: { elapsed: 67, extra: null }, team: { id: 455, name: "River Plate", logo: "" }, player: { id: 115, name: "Franco Mastantuono" }, assist: { id: 108, name: null }, type: "subst", detail: "Substitution 1", comments: null },
     { time: { elapsed: 75, extra: null }, team: { id: 455, name: "River Plate", logo: "" }, player: { id: 116, name: "Salomón Rondón" }, assist: { id: 111, name: null }, type: "subst", detail: "Substitution 2", comments: null }
   ],
@@ -219,34 +219,34 @@ export const MOCK_MATCH_DETAIL: MatchDetail = {
     {
       id: "3",
       timestamp: Date.now(),
-      minute: 23,
-      type: "GOAL",
-      title: "Gol de Boca",
-      description: "⚽ Gol de Miguel Merentiel (asistencia de Pol Fernández). Boca toma ventaja y buscará controlar el ritmo.",
-      icon: "⚽",
-      team: "home",
-      importance: "high"
-    },
-    {
-      id: "4",
-      timestamp: Date.now(),
-      minute: 47,
+      minute: 15,
       type: "GOAL",
       title: "Gol de River",
-      description: "⚽ Empata River! Gol de Ignacio Fernández (asistencia de Manuel Lanzini). El partido se abre.",
+      description: "⚽ Gol de Miguel Borja (asistencia de Manuel Lanzini). River toma ventaja en La Bombonera.",
       icon: "⚽",
       team: "away",
       importance: "high"
     },
     {
-      id: "5",
+      id: "4",
       timestamp: Date.now(),
-      minute: 62,
+      minute: 23,
       type: "GOAL",
       title: "Gol de Boca",
-      description: "⚽ Kevin Zenón pone arriba a Boca nuevamente. El equipo busca defender la ventaja.",
+      description: "⚽ Empata Boca! Gol de Luis Vázquez. El partido se iguala.",
       icon: "⚽",
       team: "home",
+      importance: "high"
+    },
+    {
+      id: "5",
+      timestamp: Date.now(),
+      minute: 47,
+      type: "GOAL",
+      title: "Gol de River",
+      description: "⚽ Paulo Solari pone arriba a River nuevamente. Gran contraataque del Millonario.",
+      icon: "⚽",
+      team: "away",
       importance: "high"
     },
     {
@@ -255,7 +255,7 @@ export const MOCK_MATCH_DETAIL: MatchDetail = {
       minute: 67,
       type: "SUBSTITUTION",
       title: "Cambio táctico",
-      description: "⚡ 67' Cambio: Sale Ignacio Fernández, entra Franco Mastantuono. Movimiento para refrescar el mediocampo.",
+      description: "⚡ 67' Gallardo mueve el banco: Mastantuono entra por Nacho Fernández.",
       icon: "⚡",
       team: "away",
       importance: "medium"
@@ -266,7 +266,7 @@ export const MOCK_MATCH_DETAIL: MatchDetail = {
       minute: 75,
       type: "SUBSTITUTION",
       title: "Cambio ofensivo",
-      description: "⚡ 75' Último cambio buscando definir: Borja entra por Solari. Gallardo apuesta todo al ataque.",
+      description: "⚡ 75' Entra Rondón por Borja. River busca el tercero para sentenciar.",
       icon: "⚡",
       team: "away",
       importance: "high"
@@ -274,7 +274,6 @@ export const MOCK_MATCH_DETAIL: MatchDetail = {
   ]
 };
 
-// Función para obtener datos mock
 export function getMockFixtures(): Match[] {
   return MOCK_MATCHES;
 }
@@ -283,7 +282,6 @@ export function getMockMatchDetail(fixtureId: number): MatchDetail | null {
   if (fixtureId === 1001) {
     return MOCK_MATCH_DETAIL;
   }
-  // Para otros partidos, devolvemos un detalle básico
   const match = MOCK_MATCHES.find(m => m.fixture.id === fixtureId);
   if (match) {
     return { ...match, lineups: undefined, events: [], tacticalInsights: [] };
