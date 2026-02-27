@@ -7,10 +7,6 @@ const BASE_URL = "https://v3.football.api-sports.io";
 async function fetchFromAPI(endpoint: string, params: Record<string, string> = {}) {
   const API_KEY = process.env.FOOTBALL_API_KEY || "";
 
-  console.log("[API-Football] Using API Key:", API_KEY ? "Presente" : "FALTANTE");
-  console.log("[API-Football] Endpoint:", endpoint);
-  console.log("[API-Football] Params:", params);
-
   const url = new URL(`${BASE_URL}${endpoint}`);
 
   Object.entries(params).forEach(([key, value]) => {
@@ -25,11 +21,9 @@ async function fetchFromAPI(endpoint: string, params: Record<string, string> = {
   });
 
   const data = await response.json();
-  console.log("[API-Football] Response status:", response.status);
-  console.log("[API-Football] Response data:", JSON.stringify(data).slice(0, 500));
 
   if (!response.ok) {
-    throw new Error(`API Error: ${response.status} - ${JSON.stringify(data)}`);
+    throw new Error(`API Error: ${response.status}`);
   }
 
   return data;
@@ -38,28 +32,54 @@ async function fetchFromAPI(endpoint: string, params: Record<string, string> = {
 // Obtener partidos del día para las ligas seleccionadas
 export async function getFixtures(date?: string, leagues?: LeagueId[]): Promise<Match[]> {
   const today = date || new Date().toISOString().split("T")[0];
-  const leagueIds = leagues?.join(",") || "128,39,140";
+  const leagueIds = leagues || [128, 39, 140];
 
-  const data = await fetchFromAPI("/fixtures", {
-    date: today,
-    league: leagueIds,
-    season: CURRENT_SEASON.toString(),
-    timezone: "America/Argentina/Buenos_Aires",
-  });
+  // Hacer requests separados por cada liga (la API no acepta múltiples ligas)
+  const allMatches: Match[] = [];
 
-  return data.response || [];
+  for (const leagueId of leagueIds) {
+    try {
+      const data = await fetchFromAPI("/fixtures", {
+        date: today,
+        league: leagueId.toString(),
+        season: CURRENT_SEASON.toString(),
+        timezone: "America/Argentina/Buenos_Aires",
+      });
+
+      if (data.response && Array.isArray(data.response)) {
+        allMatches.push(...data.response);
+      }
+    } catch (error) {
+      console.error(`[API] Error fetching league ${leagueId}:`, error);
+    }
+  }
+
+  return allMatches;
 }
 
 // Obtener partidos en vivo
 export async function getLiveFixtures(leagues?: LeagueId[]): Promise<Match[]> {
-  const leagueIds = leagues?.join(",") || "128,39,140";
+  const leagueIds = leagues || [128, 39, 140];
 
-  const data = await fetchFromAPI("/fixtures", {
-    live: "all",
-    league: leagueIds,
-  });
+  // Hacer requests separados por cada liga
+  const allMatches: Match[] = [];
 
-  return data.response || [];
+  for (const leagueId of leagueIds) {
+    try {
+      const data = await fetchFromAPI("/fixtures", {
+        live: "all",
+        league: leagueId.toString(),
+      });
+
+      if (data.response && Array.isArray(data.response)) {
+        allMatches.push(...data.response);
+      }
+    } catch (error) {
+      console.error(`[API] Error fetching live league ${leagueId}:`, error);
+    }
+  }
+
+  return allMatches;
 }
 
 // Obtener detalle de un partido específico

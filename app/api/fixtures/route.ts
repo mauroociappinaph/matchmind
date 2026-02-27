@@ -13,9 +13,6 @@ export async function GET(request: NextRequest) {
       ? leaguesParam.split(",").map(Number) as LeagueId[]
       : undefined;
 
-    console.log("[API] Fetching fixtures:", { date, live, leagues });
-    console.log("[API] API Key present:", !!process.env.FOOTBALL_API_KEY);
-
     let matches;
 
     if (live) {
@@ -24,15 +21,13 @@ export async function GET(request: NextRequest) {
       matches = await getFixtures(date || undefined, leagues);
     }
 
-    console.log("[API] Matches found:", matches.length);
-
     return NextResponse.json({
       success: true,
       data: matches,
       count: matches.length
     });
   } catch (error) {
-    console.error("[API] Error fetching fixtures:", error);
+    console.error("Error fetching fixtures:", error);
     return NextResponse.json(
       {
         success: false,
