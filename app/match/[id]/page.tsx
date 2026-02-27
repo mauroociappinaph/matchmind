@@ -6,11 +6,22 @@ import Link from "next/link";
 import { MatchDetail } from "@/types";
 import { TacticalFeed } from "@/components/TacticalFeed";
 import { FormationField } from "@/components/FormationField";
+import { MatchStatistics } from "@/components/MatchStatistics";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { MATCH_STATUS } from "@/lib/constants";
+
+// Estadísticas de ejemplo
+const MOCK_STATS = [
+  { label: "Posesión", home: 42, away: 58 },
+  { label: "Tiros", home: 8, away: 14 },
+  { label: "Tiros al arco", home: 3, away: 6 },
+  { label: "Pases completados", home: 285, away: 342 },
+  { label: "Faltas", home: 12, away: 8 },
+  { label: "Córneres", home: 4, away: 7 },
+];
 
 export default function MatchPage() {
   const params = useParams();
@@ -142,6 +153,15 @@ export default function MatchPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* ESTADÍSTICAS */}
+        <div className="mb-6">
+          <MatchStatistics
+            homeTeam={teams.home.name}
+            awayTeam={teams.away.name}
+            stats={MOCK_STATS}
+          />
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Columna izquierda: Formaciones */}
