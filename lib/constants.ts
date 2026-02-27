@@ -8,7 +8,7 @@ export const LEAGUES = {
 } as const;
 
 // Temporada actual
-export const CURRENT_SEASON = 2024;
+export const CURRENT_SEASON = 2025;
 
 // Opciones de ligas para el UI
 export const LEAGUE_OPTIONS: LeagueOption[] = [
