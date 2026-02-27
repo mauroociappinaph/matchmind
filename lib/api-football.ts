@@ -1,11 +1,16 @@
 import { Match, MatchDetail, Lineup, MatchEvent, LeagueId } from "@/types";
 import { CURRENT_SEASON } from "./constants";
 
-const API_KEY = process.env.FOOTBALL_API_KEY || "";
 const BASE_URL = "https://v3.football.api-sports.io";
 
 // Cliente simple para API-Football
 async function fetchFromAPI(endpoint: string, params: Record<string, string> = {}) {
+  const API_KEY = process.env.FOOTBALL_API_KEY || "";
+
+  console.log("[API-Football] Using API Key:", API_KEY ? "Presente" : "FALTANTE");
+  console.log("[API-Football] Endpoint:", endpoint);
+  console.log("[API-Football] Params:", params);
+
   const url = new URL(`${BASE_URL}${endpoint}`);
 
   Object.entries(params).forEach(([key, value]) => {
@@ -19,11 +24,15 @@ async function fetchFromAPI(endpoint: string, params: Record<string, string> = {
     next: { revalidate: 30 }, // Cache por 30 segundos
   });
 
+  const data = await response.json();
+  console.log("[API-Football] Response status:", response.status);
+  console.log("[API-Football] Response data:", JSON.stringify(data).slice(0, 500));
+
   if (!response.ok) {
-    throw new Error(`API Error: ${response.status}`);
+    throw new Error(`API Error: ${response.status} - ${JSON.stringify(data)}`);
   }
 
-  return response.json();
+  return data;
 }
 
 // Obtener partidos del día para las ligas seleccionadas

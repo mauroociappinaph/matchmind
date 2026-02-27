@@ -10,6 +10,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function Home() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedLeagues, setSelectedLeagues] = useState<LeagueId[]>([
     LEAGUES.ARGENTINA,
     LEAGUES.PREMIER,
@@ -21,6 +22,7 @@ export default function Home() {
     async function fetchMatches() {
       try {
         setLoading(true);
+        setError(null);
         const url = new URL("/api/fixtures", window.location.origin);
         url.searchParams.set("leagues", selectedLeagues.join(","));
 
@@ -33,9 +35,12 @@ export default function Home() {
 
         if (data.success) {
           setMatches(data.data);
+        } else {
+          setError(data.error || "Error al cargar partidos");
         }
       } catch (error) {
         console.error("Error fetching matches:", error);
+        setError("Error de conexión con el servidor");
       } finally {
         setLoading(false);
       }
@@ -101,6 +106,14 @@ export default function Home() {
         {loading ? (
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-lg text-red-500 mb-2">❌ Error</p>
+            <p className="text-muted-foreground">{error}</p>
+            <p className="text-sm text-muted-foreground mt-4">
+              Verificá que tu API key esté configurada en .env.local
+            </p>
           </div>
         ) : matches.length === 0 ? (
           <div className="text-center py-12">
