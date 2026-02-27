@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getFixtures, getLiveFixtures } from "@/lib/api-football";
+import { getMockFixtures } from "@/lib/mock-data";
 import { LeagueId } from "@/types";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const date = searchParams.get("date");
     const live = searchParams.get("live") === "true";
     const leaguesParam = searchParams.get("leagues");
 
@@ -13,19 +12,22 @@ export async function GET(request: NextRequest) {
       ? leaguesParam.split(",").map(Number) as LeagueId[]
       : undefined;
 
-    console.log("[API] Request params:", { date, live, leagues });
+    // Usar datos de ejemplo (mock) en lugar de la API real
+    const allMatches = getMockFixtures();
 
-    let matches;
-
-    if (live) {
-      matches = await getLiveFixtures(leagues);
-    } else {
-      matches = await getFixtures(date || undefined, leagues);
+    // Filtrar por ligas si se especificaron
+    let matches = allMatches;
+    if (leagues && leagues.length > 0) {
+      matches = allMatches.filter(m => leagues.includes(m.league.id as LeagueId));
     }
 
-    console.log("[API] Matches found:", matches.length);
-    if (matches.length > 0) {
-      console.log("[API] First match:", JSON.stringify(matches[0]).slice(0, 200));
+    // Si es modo live, filtrar solo partidos en vivo
+    if (live) {
+      matches = matches.filter(m =>
+        m.fixture.status.short === "L1" ||
+        m.fixture.status.short === "L2" ||
+        m.fixture.status.short === "HT"
+      );
     }
 
     return NextResponse.json({
@@ -38,7 +40,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Error al obtener partidos",
+        error: "Error al obtener partidos",
         data: []
       },
       { status: 500 }

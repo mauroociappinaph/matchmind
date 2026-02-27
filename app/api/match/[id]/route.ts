@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getMatchDetail, getMatchLineups, getMatchEvents } from "@/lib/api-football";
+import { getMockMatchDetail } from "@/lib/mock-data";
 import { generateTacticalInsights } from "@/lib/tactical-engine";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const matchId = Number(params.id);
+    const { id } = await params;
+    const matchId = Number(id);
 
     if (isNaN(matchId)) {
       return NextResponse.json(
@@ -16,12 +17,8 @@ export async function GET(
       );
     }
 
-    // Obtener datos del partido en paralelo
-    const [match, lineups, events] = await Promise.all([
-      getMatchDetail(matchId),
-      getMatchLineups(matchId),
-      getMatchEvents(matchId),
-    ]);
+    // Obtener datos mock del partido
+    const match = getMockMatchDetail(matchId);
 
     if (!match) {
       return NextResponse.json(
@@ -30,15 +27,14 @@ export async function GET(
       );
     }
 
-    // Generar insights tácticos
-    const tacticalInsights = generateTacticalInsights(events || [], lineups);
+    // Generar insights tácticos si no existen
+    const tacticalInsights = match.tacticalInsights ||
+      generateTacticalInsights(match.events || [], match.lineups || null);
 
     return NextResponse.json({
       success: true,
       data: {
         ...match,
-        lineups,
-        events,
         tacticalInsights,
       },
     });
