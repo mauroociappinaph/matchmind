@@ -13,12 +13,19 @@ export async function GET(request: NextRequest) {
       ? leaguesParam.split(",").map(Number) as LeagueId[]
       : undefined;
 
+    console.log("[API] Request params:", { date, live, leagues });
+
     let matches;
 
     if (live) {
       matches = await getLiveFixtures(leagues);
     } else {
       matches = await getFixtures(date || undefined, leagues);
+    }
+
+    console.log("[API] Matches found:", matches.length);
+    if (matches.length > 0) {
+      console.log("[API] First match:", JSON.stringify(matches[0]).slice(0, 200));
     }
 
     return NextResponse.json({

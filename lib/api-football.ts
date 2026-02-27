@@ -1,5 +1,4 @@
 import { Match, MatchDetail, Lineup, MatchEvent, LeagueId } from "@/types";
-import { CURRENT_SEASON } from "./constants";
 
 const BASE_URL = "https://v3.football.api-sports.io";
 
@@ -17,7 +16,7 @@ async function fetchFromAPI(endpoint: string, params: Record<string, string> = {
     headers: {
       "x-apisports-key": API_KEY,
     },
-    next: { revalidate: 30 }, // Cache por 30 segundos
+    next: { revalidate: 30 },
   });
 
   const data = await response.json();
@@ -34,7 +33,6 @@ export async function getFixtures(date?: string, leagues?: LeagueId[]): Promise<
   const today = date || new Date().toISOString().split("T")[0];
   const leagueIds = leagues || [128, 39, 140];
 
-  // Hacer requests separados por cada liga (la API no acepta múltiples ligas)
   const allMatches: Match[] = [];
 
   for (const leagueId of leagueIds) {
@@ -42,15 +40,13 @@ export async function getFixtures(date?: string, leagues?: LeagueId[]): Promise<
       const data = await fetchFromAPI("/fixtures", {
         date: today,
         league: leagueId.toString(),
-        season: CURRENT_SEASON.toString(),
-        timezone: "America/Argentina/Buenos_Aires",
       });
 
       if (data.response && Array.isArray(data.response)) {
         allMatches.push(...data.response);
       }
     } catch (error) {
-      console.error(`[API] Error fetching league ${leagueId}:`, error);
+      console.error(`Error fetching league ${leagueId}:`, error);
     }
   }
 
@@ -61,7 +57,6 @@ export async function getFixtures(date?: string, leagues?: LeagueId[]): Promise<
 export async function getLiveFixtures(leagues?: LeagueId[]): Promise<Match[]> {
   const leagueIds = leagues || [128, 39, 140];
 
-  // Hacer requests separados por cada liga
   const allMatches: Match[] = [];
 
   for (const leagueId of leagueIds) {
@@ -75,7 +70,7 @@ export async function getLiveFixtures(leagues?: LeagueId[]): Promise<Match[]> {
         allMatches.push(...data.response);
       }
     } catch (error) {
-      console.error(`[API] Error fetching live league ${leagueId}:`, error);
+      console.error(`Error fetching live league ${leagueId}:`, error);
     }
   }
 
